@@ -8,15 +8,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const repositories = [
-  {
-    id: "858d10bb-03ee-4807-b8dc-d97a1b75db32",
-    title: "Teste",
-    url: "http://www.google.com.br",
-    techs: ["react"],
-    likes: 0,
-  },
-];
+const repositories = [];
 
 app.get("/repositories", (request, response) => {
   // TODO
@@ -39,23 +31,28 @@ app.put("/repositories/:id", (request, response) => {
 
   const repositoryIndex = repositories.findIndex((repo) => repo.id === id);
 
-  if (repositoryIndex) {
+  if (repositoryIndex < 0) {
     return response.status(400).json({ error: "Repository not found" });
   }
 
-  const repository = { id, title, url, techs };
+  repositories[repositoryIndex] = {
+    id,
+    title,
+    url,
+    techs,
+    likes: 0,
+  };
 
-  repositories[repositoryIndex] = repository;
-
-  return response.json(repository);
+  return response.json(repositories[repositoryIndex]);
 });
 
 app.delete("/repositories/:id", (request, response) => {
   // TODO
   const { id } = request.params;
+  console.log(id);
   const repositoryIndex = repositories.findIndex((repo) => repo.id === id);
 
-  if (repositoryIndex) {
+  if (repositoryIndex < 0) {
     return response.status(400).json({ error: "Repository not found" });
   }
 
@@ -69,7 +66,7 @@ app.post("/repositories/:id/like", (request, response) => {
   const { id } = request.params;
   const repositoryIndex = repositories.findIndex((repo) => repo.id === id);
 
-  if (repositoryIndex) {
+  if (repositoryIndex < 0) {
     return response.status(400).json({ error: "Repository not found" });
   }
 
